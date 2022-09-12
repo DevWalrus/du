@@ -1,0 +1,15 @@
+/home/walrusdev/RiderProjects/du/bin/Debug/net6.0/du
+/home/walrusdev/RiderProjects/du/bin/Debug/net6.0/du.deps.json
+/home/walrusdev/RiderProjects/du/bin/Debug/net6.0/du.runtimeconfig.json
+/home/walrusdev/RiderProjects/du/bin/Debug/net6.0/du.dll
+/home/walrusdev/RiderProjects/du/bin/Debug/net6.0/du.pdb
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.csproj.AssemblyReference.cache
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.GeneratedMSBuildEditorConfig.editorconfig
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.AssemblyInfoInputs.cache
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.AssemblyInfo.cs
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.csproj.CoreCompileInputs.cache
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.dll
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/refint/du.dll
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.pdb
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/du.genruntimeconfig.cache
+/home/walrusdev/RiderProjects/du/obj/Debug/net6.0/ref/du.dll
