@@ -5,15 +5,14 @@ using System.Diagnostics;
 
 namespace du
 {
+    /// <summary>
+    /// A helper class for the <see cref="du"/> class.
+    /// </summary>
     public class DiskReader
     {
-        static int folderCount;
-        static int fileCount;
-        static long byteCount;
-
-        // private readonly object folderLock = new object();
-        // private readonly object fileLock = new object();
-        // private readonly object byteLock = new object();
+        private static int folderCount;
+        private static int fileCount;
+        private static long byteCount;
 
         /// <summary>
         /// Initializes a new DiskReader object and sets every count to 0.
@@ -27,48 +26,10 @@ namespace du
 
         public void ResetCounters()
         {
-            // lock (folderLock)
-            // {
-            //     folderCount = 0;
-            // }
-            //
-            // lock (fileLock)
-            // {
-            //     fileCount = 0;
-            // }
-            //
-            // lock (byteLock)
-            // {
-            //     byteCount = 0;
-            // }
             Interlocked.Exchange(ref byteCount, 0);
             Interlocked.Exchange(ref fileCount, 0);
             Interlocked.Exchange(ref folderCount, 0);
         }
-
-        // private void IncFolder()
-        // {
-        //     lock (folderLock)
-        //     {
-        //         folderCount++;
-        //     }
-        // }
-        //
-        // private void IncFile()
-        // {
-        //     lock (fileLock)
-        //     {
-        //         fileCount++;
-        //     }
-        // }
-        //
-        // private void AddByte(long size)
-        // {
-        //     lock (byteLock)
-        //     {
-        //         byteCount += size;
-        //     }
-        // }
 
         /// <summary>
         /// Look through a provided directory, <paramref name="dir"/>, and all children, to find the size of every file in the tree. The file count and
@@ -82,7 +43,6 @@ namespace du
         /// <param name="dir">The parent directory to begin the tree search through</param>
         public void ParDU(string dir)
         {
-            //IncFolder();
             Interlocked.Increment(ref folderCount);
             List<string> files = new List<string>();
             string[] dirs = Array.Empty<string>();
@@ -98,9 +58,7 @@ namespace du
 
             foreach (var fInfo in files.Select(f => new FileInfo(f)))
             {
-                //IncFile();
                 Interlocked.Increment(ref fileCount);
-                //AddByte(fInfo.Length);
                 Interlocked.Add(ref byteCount, fInfo.Length);
             }
 
@@ -113,15 +71,14 @@ namespace du
         /// sizes are then summed and stored in the <c>fileCount</c> and <c>byteCount</c> variable, respectively. The
         /// total folders traversed are also summed and stored in the <c>folderCount</c> variable.
         ///
-        /// This process is done in happens in a sequential fashion, where every folder parsed on the same thread.
-        /// The counterpart to this method is the <see cref="ParDU"/> method which handles each encountered folder on a
-        /// new thread.
+        /// This process is done in happens in a sequential fashion, where every folder parsed recursively on the same
+        /// thread. The counterpart to this method is the <see cref="ParDU"/> method which handles each encountered
+        /// folder on a new thread.
         /// </summary>
         /// <param name="dir">The parent directory to begin the tree search through</param>
         public void SeqDU(string dir)
         {
-            //IncFolder();
-            Interlocked.Increment(ref folderCount);
+            folderCount++;
             List<string> files = new List<string>();
 
             string[] dirs = Array.Empty<string>();
@@ -137,10 +94,8 @@ namespace du
 
             foreach (var fInfo in files.Select(f => new FileInfo(f)))
             {
-                //IncFile();
-                Interlocked.Increment(ref fileCount);
-                //AddByte(fInfo.Length);
-                Interlocked.Add(ref byteCount, fInfo.Length);
+                fileCount++;
+                byteCount += fInfo.Length;
             }
 
             foreach (var d in dirs)
@@ -149,6 +104,14 @@ namespace du
             }
         }
 
+        /// <summary>
+        /// Prints out the data from the most recent run(s) of the du program. <paramref name="stopwatch"/> is passed in
+        /// to get the total run time of the program, the <paramref name="parallel"/> is passed in to denote what type
+        /// of run occured. 
+        /// </summary>
+        /// <param name="stopwatch">The total run time of the program, this gets converted into a double number of
+        /// seconds elapsed.</param>
+        /// <param name="parallel">True if the preceding run was done in parallel, false otherwise</param>
         public void Output(Stopwatch stopwatch, bool parallel)
         {
             Console.WriteLine("{0} Calculated in: {1:N7}s", parallel ? "Parallel" : "Sequential",
@@ -157,9 +120,9 @@ namespace du
         }
 
         /// <summary>
-        /// 
+        /// Outputs a help message whenever a command line argument is incorrect or improperly formatted.
         /// </summary>
-        public void Error()
+        public void HelpMsg()
         {
             Console.WriteLine("Usage: du [-s] [-p] [-b] <path>\n" +
                               "Summarize disk usage of the set of FILES, recursively for directories.\n" +
@@ -168,28 +131,61 @@ namespace du
                               "-p\tRun in parallel mode (uses all available processors)\n" +
                               "-b\tRun in both parallel and single threaded mode.\n" +
                               "\tRuns parallel followed by sequential mode");
-            Environment.Exit(1);
         }
     }
 
+    /// <summary>
+    /// The main program. The full description is in <see cref="du.Main"/>
+    /// </summary>
     public class du
     {
         /// <summary>
-        /// 
+        /// A program that take in a predefined number of <paramref name="args"/> as defined in the
+        /// <see cref="DiskReader.HelpMsg"/>. The runs are timed and then output in a formatted message; see:
+        /// <see cref="DiskReader.Output"/>. The program has 4 defined exit codes:
+        /// <list type="table">
+        ///     <listheader>
+        ///         <term>Code</term>
+        ///         <description>Meaning</description>
+        ///     </listheader>
+        ///     <item>
+        ///         <term>0</term>
+        ///         <description>Success</description>
+        ///     </item>
+        ///     <item>
+        ///         <term>1</term>
+        ///         <description>Incorrect number of args provided</description>
+        ///     </item>
+        ///     <item>
+        ///         <term>2</term>
+        ///         <description>Directory is not available to the program</description>
+        ///     </item>
+        ///     <item>
+        ///         <term>3</term>
+        ///         <description>First arg is not defined</description>
+        ///     </item>
+        /// </list>
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">Arguments as they are defined in <see cref="DiskReader.HelpMsg"/></param>
         public static void Main(string[] args)
         {
             var diskReader = new DiskReader();
             var stopwatch = new Stopwatch();
 
-            if (args.Length < 2 || !new DirectoryInfo(args[1]).Exists)
+            if (args.Length < 2)
             {
-                Console.WriteLine(args.Length);
-                Console.WriteLine(new DirectoryInfo(args[1]).Exists);
-                diskReader.Error();
+                diskReader.HelpMsg();
+                Environment.Exit(1);
             }
 
+            if (!new DirectoryInfo(args[1]).Exists)
+            {
+                diskReader.HelpMsg();
+                Environment.Exit(2);
+            }
+
+            Console.WriteLine("Directory: '{0}':", new DirectoryInfo(args[1]).FullName);
+    
             switch (args[0])
             {
                 case "-p":
@@ -219,7 +215,8 @@ namespace du
                     diskReader.Output(stopwatch, false);
                     break;
                 default:
-                    diskReader.Error();
+                    diskReader.HelpMsg();
+                    Environment.Exit(3);
                     break;
             }
         }
