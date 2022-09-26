@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace du
 {
     /// <summary>
-    /// A helper class for the <see cref="du"/> class.
+    /// A class of essentially helper functions for the <see cref="du"/> program.
     /// </summary>
     public class DiskReader
     {
@@ -53,6 +53,7 @@ namespace du
             }
             catch (UnauthorizedAccessException ignored)
             {
+                Console.Write(".");
                 // Ignore these exceptions, throw all others
             }
 
@@ -80,7 +81,7 @@ namespace du
         {
             folderCount++;
             List<string> files = new List<string>();
-
+            
             string[] dirs = Array.Empty<string>();
             try
             {
@@ -122,7 +123,7 @@ namespace du
         /// <summary>
         /// Outputs a help message whenever a command line argument is incorrect or improperly formatted.
         /// </summary>
-        public void HelpMsg()
+        public static void HelpMsg()
         {
             Console.WriteLine("Usage: du [-s] [-p] [-b] <path>\n" +
                               "Summarize disk usage of the set of FILES, recursively for directories.\n" +
@@ -145,7 +146,7 @@ namespace du
         /// <see cref="DiskReader.Output"/>. The program has 4 defined exit codes:
         /// <list type="table">
         ///     <listheader>
-        ///         <term>Code</term>
+        ///         <term>Exit Code</term>
         ///         <description>Meaning</description>
         ///     </listheader>
         ///     <item>
@@ -174,13 +175,13 @@ namespace du
 
             if (args.Length < 2)
             {
-                diskReader.HelpMsg();
+                DiskReader.HelpMsg();
                 Environment.Exit(1);
             }
 
             if (!new DirectoryInfo(args[1]).Exists)
             {
-                diskReader.HelpMsg();
+                DiskReader.HelpMsg();
                 Environment.Exit(2);
             }
 
@@ -215,7 +216,7 @@ namespace du
                     diskReader.Output(stopwatch, false);
                     break;
                 default:
-                    diskReader.HelpMsg();
+                    DiskReader.HelpMsg();
                     Environment.Exit(3);
                     break;
             }
