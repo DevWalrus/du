@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "yPw1gGyPI7HabiqZnwcFSCNNplhkZoTeInt0BuFWIFoBTY/ysBDMDZEKzTTyayM/oQ3e6g6eNM+OjcuNNxtQrQ==",
+  "dgSpecHash": "Au83Y/wjfxv8ATq6hQtzXvEYZ2NeEh3k1qsI5kIwDEqzctMnDufDfzZENhNFA2U2lxOt+rdgefPmGzO/VuDQlQ==",
   "success": true,
-  "projectFilePath": "/home/walrusdev/RiderProjects/du/du.csproj",
+  "projectFilePath": "/home/walrus/RiderProjects/du/du.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

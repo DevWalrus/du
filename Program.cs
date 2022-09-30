@@ -10,25 +10,28 @@ namespace du
     /// </summary>
     public class DiskReader
     {
-        private static int folderCount;
-        private static int fileCount;
-        private static long byteCount;
+        private static int _folderCount;
+        private static int _fileCount;
+        private static long _byteCount;
 
         /// <summary>
         /// Initializes a new DiskReader object and sets every count to 0.
         /// </summary>
         public DiskReader()
         {
-            folderCount = 0;
-            fileCount = 0;
-            byteCount = 0;
+            _folderCount = 0;
+            _fileCount = 0;
+            _byteCount = 0;
         }
 
+        /// <summary>
+        /// A simple method that sets all of the counters back to 0 to allow the user to run another pass of the reader.
+        /// </summary>
         public void ResetCounters()
         {
-            Interlocked.Exchange(ref byteCount, 0);
-            Interlocked.Exchange(ref fileCount, 0);
-            Interlocked.Exchange(ref folderCount, 0);
+            Interlocked.Exchange(ref _byteCount, 0);
+            Interlocked.Exchange(ref _fileCount, 0);
+            Interlocked.Exchange(ref _folderCount, 0);
         }
 
         /// <summary>
@@ -43,7 +46,7 @@ namespace du
         /// <param name="dir">The parent directory to begin the tree search through</param>
         public void ParDU(string dir)
         {
-            Interlocked.Increment(ref folderCount);
+            Interlocked.Increment(ref _folderCount);
             List<string> files = new List<string>();
             string[] dirs = Array.Empty<string>();
             try
@@ -51,16 +54,15 @@ namespace du
                 files = new List<string>(Directory.GetFiles(dir));
                 dirs = Directory.GetDirectories(dir);
             }
-            catch (UnauthorizedAccessException ignored)
+            catch
             {
-                Console.Write(".");
                 // Ignore these exceptions, throw all others
             }
 
             foreach (var fInfo in files.Select(f => new FileInfo(f)))
             {
-                Interlocked.Increment(ref fileCount);
-                Interlocked.Add(ref byteCount, fInfo.Length);
+                Interlocked.Increment(ref _fileCount);
+                Interlocked.Add(ref _byteCount, fInfo.Length);
             }
 
             Parallel.ForEach(dirs, ParDU);
@@ -79,7 +81,7 @@ namespace du
         /// <param name="dir">The parent directory to begin the tree search through</param>
         public void SeqDU(string dir)
         {
-            folderCount++;
+            _folderCount++;
             List<string> files = new List<string>();
             
             string[] dirs = Array.Empty<string>();
@@ -95,8 +97,8 @@ namespace du
 
             foreach (var fInfo in files.Select(f => new FileInfo(f)))
             {
-                fileCount++;
-                byteCount += fInfo.Length;
+                _fileCount++;
+                _byteCount += fInfo.Length;
             }
 
             foreach (var d in dirs)
@@ -117,7 +119,7 @@ namespace du
         {
             Console.WriteLine("{0} Calculated in: {1:N7}s", parallel ? "Parallel" : "Sequential",
                 stopwatch.Elapsed.TotalMilliseconds / 1000);
-            Console.WriteLine("{0:N0} folders, {1:N0} files, {2:N0} bytes", folderCount, fileCount, byteCount);
+            Console.WriteLine("{0:N0} folders, {1:N0} files, {2:N0} bytes", _folderCount, _fileCount, _byteCount);
         }
 
         /// <summary>

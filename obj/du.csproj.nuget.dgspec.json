@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/walrusdev/RiderProjects/du/du.csproj": {}
+    "/home/walrus/RiderProjects/du/du.csproj": {}
   },
   "projects": {
-    "/home/walrusdev/RiderProjects/du/du.csproj": {
+    "/home/walrus/RiderProjects/du/du.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/walrusdev/RiderProjects/du/du.csproj",
+        "projectUniqueName": "/home/walrus/RiderProjects/du/du.csproj",
         "projectName": "du",
-        "projectPath": "/home/walrusdev/RiderProjects/du/du.csproj",
-        "packagesPath": "/home/walrusdev/.nuget/packages/",
-        "outputPath": "/home/walrusdev/RiderProjects/du/obj/",
+        "projectPath": "/home/walrus/RiderProjects/du/du.csproj",
+        "packagesPath": "/home/walrus/.nuget/packages/",
+        "outputPath": "/home/walrus/RiderProjects/du/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/walrusdev/.nuget/NuGet/NuGet.Config"
+          "/home/walrus/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -53,7 +53,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/home/walrusdev/.dotnet/sdk/6.0.400/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/home/walrus/.dotnet/sdk/6.0.401/RuntimeIdentifierGraph.json"
         }
       }
     }
