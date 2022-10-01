@@ -56,7 +56,7 @@ namespace du
             }
             catch
             {
-                // Ignore these exceptions, throw all others
+                // Ignore exceptions
             }
 
             foreach (var fInfo in files.Select(f => new FileInfo(f)))
@@ -90,9 +90,9 @@ namespace du
                 files = new List<string>(Directory.GetFiles(dir));
                 dirs = Directory.GetDirectories(dir);
             }
-            catch (UnauthorizedAccessException ignored)
+            catch
             {
-                // Ignore these exceptions, throw all others
+                // Ignore exceptions
             }
 
             foreach (var fInfo in files.Select(f => new FileInfo(f)))
